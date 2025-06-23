@@ -1,21 +1,22 @@
 {
-  "name": "@repo/common",
+  "name": "@repo/db",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
-  "exports": {
-    "./types": "./dist/types.js"
-  },
-  "scripts": {
-    "build": "tsc -b"
+  "exports":{
+    "./client":"./dist/index.js"
   },
   "devDependencies": {
     "@repo/typescript-config": "workspace:*"
+  },
+  "scripts": {
+    "build": "tsc -b"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "zod": "^3.24.3"
+    "@prisma/client": "^6.10.1",
+    "prisma": "^6.10.1"
   }
 }

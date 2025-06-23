@@ -8,7 +8,7 @@ export const UserLoginSchema = z.object(
 )
 export const UserSignUpSchema = z.object(
     {
-        username:z.string().min(2).max(10),
+        username:z.string().min(2).max(20),
         email:z.string(),
         password:z.string().min(8)
     }

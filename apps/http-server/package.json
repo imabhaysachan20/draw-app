@@ -5,20 +5,22 @@
   "main": "index.js",
   "scripts": {
     "build": "tsc -b",
-    "start": "node ./dist/index.js",
+    "start": "node --watch ./dist/index.js",
     "dev": "pnpm run build && pnpm run start"
   },
   "devDependencies": {
+    "@repo/backend-common": "workspace:*",
+    "@repo/common": "workspace:*",
     "@repo/typescript-config": "workspace:*",
-    "@types/express": "^5.0.1",
-    "@repo/backend-common":"workspace:*",
-    "@repo/common":"workspace:*"
+    "@types/express": "^5.0.1"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@repo/db": "workspace:*",
     "@types/jsonwebtoken": "^9.0.9",
+    "bcryptjs": "^3.0.2",
     "express": "^5.1.0",
     "jsonwebtoken": "^9.0.2"
   }
