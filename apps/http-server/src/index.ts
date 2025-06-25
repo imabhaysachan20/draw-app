@@ -3,11 +3,12 @@ import jwt from "jsonwebtoken"
 import { JWT_SECRET } from '@repo/backend-common/config';
 import { middleware } from './middleware';
 import {UserLoginSchema,UserSignUpSchema,roomSchema} from "@repo/common/types"
+import cors from "cors"
 import {db} from "@repo/db/client"
 import bcrypt from "bcryptjs";
 const app = express();
 app.use(express.json())
-
+app.use(cors())
 app.post("/signin",async (req,res)=>{
     const data = UserLoginSchema.safeParse(req.body)
     

@@ -18,10 +18,10 @@ wss.on('connection', function connection(ws,req) {
     return;
   }
   const token = new URL(url,'ws://localhost:8080').searchParams.get('token') || "";
-  console.log(token)
   const userId = verifyToken(token);
-  
+
   if (!userId) {
+    console.log("no user id")
     ws.close();
     return;
   }

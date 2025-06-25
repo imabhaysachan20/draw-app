@@ -1,7 +1,13 @@
 import Canvas from '@/app/components/canvas'
-function page() {
+async function page({params}:{
+  params:{
+    roomid:string
+  }
+}) {
+  const id = (await params).roomid
+
   
-  return <Canvas/>
+  return <Canvas roomId={id}/>
 }
 
 export default page

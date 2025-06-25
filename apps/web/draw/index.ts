@@ -1,3 +1,5 @@
+import { BACKEND_URL } from "@/app/config";
+import axios from "axios"
 type shape  = {
             type:"rect",
             startX:number,
@@ -10,17 +12,29 @@ type shape  = {
             centerY:number,
             radius:number
         }
-export function initDraw(canvas:HTMLCanvasElement) {
-        const existingShapes:shape[] = [];
+export async function initDraw(canvas:HTMLCanvasElement, roomId:string,socket:WebSocket) {
+        const sh = (await fetchExistingShapes(roomId)).messages.map((s:any)=>JSON.parse(s.message))
+        const existingShapes:shape[] = sh
         const ctx = canvas.getContext("2d");
         if (!ctx) {
             return;
         }
 
+        clearCanvas(existingShapes,canvas,ctx)
         const width = canvas.width;
         const height = canvas.height;
         let isMouseDown = false;
         let startX:number, startY:number;
+        socket.onmessage = (e)=>{
+            console.log("in")
+            
+            const data = JSON.parse(e.data)
+            if (data.type=="chat") {
+                console.log("in in")
+                existingShapes.push(JSON.parse(data.message))
+                clearCanvas(existingShapes,canvas,ctx)
+            }
+        }
         canvas.addEventListener("mousedown",(e)=>{
             isMouseDown = true;
             const rect = canvas.getBoundingClientRect();
@@ -41,6 +55,13 @@ export function initDraw(canvas:HTMLCanvasElement) {
                 height,
                 width
             })
+            const message:shape = {type:"rect",startX,startY,height,width}
+            socket.send(JSON.stringify({
+                type:"chat",
+                roomId,
+                message:JSON.stringify(message),
+                userId:"0bf0d2d9-9f21-44f1-8c56-3e5d9736ede8"
+            }))
         })
         canvas.addEventListener("mousemove",(e)=>{
             if (isMouseDown) {
@@ -51,6 +72,16 @@ export function initDraw(canvas:HTMLCanvasElement) {
                 ctx.strokeRect(startX,startY,currX-startX,currY-startY);
             }
         })
+}
+
+async function fetchExistingShapes(roomId:string) {
+    try {
+    const resp = await axios.get(`${BACKEND_URL}/chat/${roomId}`) ;
+    return resp.data;
+    }
+    catch(e) {
+        console.log(e)
+    }
 }
 
 function clearCanvas(existingShapes:shape[],canvas :HTMLCanvasElement,ctx:CanvasRenderingContext2D) {
