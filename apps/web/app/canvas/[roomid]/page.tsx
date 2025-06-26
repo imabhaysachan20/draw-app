@@ -1,4 +1,5 @@
 import Canvas from '@/app/components/canvas'
+import { ShapeContext, ShapeProvider } from '@/contexts/shapeContext'
 async function page({params}:{
   params:{
     roomid:string
@@ -7,7 +8,7 @@ async function page({params}:{
   const id = (await params).roomid
 
   
-  return <Canvas roomId={id}/>
+  return <ShapeProvider><Canvas roomId={id}/></ShapeProvider>
 }
 
 export default page

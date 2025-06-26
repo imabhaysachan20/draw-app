@@ -1,7 +1,9 @@
 "use client"
 import { initDraw } from "@/draw"
-import { useRef,useEffect, useState } from "react"
+import { useRef,useEffect, useState, useContext } from "react"
 import { WS_URL } from "../config";
+import Topbar from "./topbar";
+import { ShapeContext } from "@/contexts/shapeContext";
 
 
 
@@ -9,7 +11,14 @@ import { WS_URL } from "../config";
 function Canvas({roomId}:{roomId:string}) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null)
   const [socket,setSocket] = useState<WebSocket|null>(null);
-    
+    const context = useContext(ShapeContext);
+    if (!context) {
+      return;
+    }
+    useEffect(()=>{
+      // @ts-ignore
+      window.currentShape = context.shape
+    },[context.shape])
     useEffect(()=>{
         const ws = new WebSocket(`${WS_URL}?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjBiZjBkMmQ5LTlmMjEtNDRmMS04YzU2LTNlNWQ5NzM2ZWRlOCIsInVzZXJuYW1lIjoiYWJoYXkyMyIsImlhdCI6MTc1MDY0OTIxNCwiZXhwIjoxNzUxMjU0MDE0fQ.HBEmhIAm5YxgqUPVXRRc_Oay6w_MN0FIkgKDiMYhbz4`);
       ws.onopen = (e)=>{
@@ -45,8 +54,9 @@ function Canvas({roomId}:{roomId:string}) {
         </div>
     }
   return (
-    <div className=''>
-        <canvas className='border border-red-200' height={1000} width={1200} ref={canvasRef}>
+    <div className='h-screen overflow-hidden'>
+        <Topbar/>
+        <canvas className='border border-red-200' height={window.innerHeight} width={window.innerWidth} ref={canvasRef}>
         </canvas>
     </div>
   )

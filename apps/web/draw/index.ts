@@ -10,7 +10,8 @@ type shape  = {
             type:"circle",
             centerX:number,
             centerY:number,
-            radius:number
+            radiusX:number,
+            radiusY:number
         }
 export async function initDraw(canvas:HTMLCanvasElement, roomId:string,socket:WebSocket) {
         const sh = (await fetchExistingShapes(roomId)).messages.map((s:any)=>JSON.parse(s.message))
@@ -41,8 +42,37 @@ export async function initDraw(canvas:HTMLCanvasElement, roomId:string,socket:We
             startX = e.clientX - rect.left;
             startY = e.clientY - rect.top;
         })
+        canvas.addEventListener("mousemove",(e)=>{
+            // @ts-ignore
+            console.log(window.currentShape)
+            if (isMouseDown) {
+                // @ts-ignore
+                if (window.currentShape=="rect") {
+                const rect = canvas.getBoundingClientRect();
+                const currX = e.clientX - rect.left;
+                const currY = e.clientY - rect.top;
+                clearCanvas(existingShapes,canvas,ctx)
+                ctx.strokeRect(startX,startY,currX-startX,currY-startY);
+                }
+                //@ts-ignore
+                if (window.currentShape=="circle") {
+                const rect = canvas.getBoundingClientRect();
+                const currX = e.clientX - rect.left;
+                const currY = e.clientY - rect.top;
+                const centerX = (startX + currX) / 2;
+                const centerY = (startY + currY) / 2;
+                const radiusX = Math.abs(currX - startX) / 2;
+                const radiusY = Math.abs(currY - startY) / 2;
+                clearCanvas(existingShapes,canvas,ctx)
+                ctx.beginPath();
+                ctx.ellipse(centerX, centerY, radiusX, radiusY, 0, 0, 2 * Math.PI);
+                ctx.stroke();
+                }
+            }
+        })
         canvas.addEventListener("mouseup",(e)=>{
             isMouseDown = false;
+            if (window.currentShape == "rect") {
             const rect = canvas.getBoundingClientRect();
             const endX = e.clientX - rect.left;
             const endY = e.clientY - rect.top;
@@ -62,16 +92,32 @@ export async function initDraw(canvas:HTMLCanvasElement, roomId:string,socket:We
                 message:JSON.stringify(message),
                 userId:"0bf0d2d9-9f21-44f1-8c56-3e5d9736ede8"
             }))
-        })
-        canvas.addEventListener("mousemove",(e)=>{
-            if (isMouseDown) {
-                const rect = canvas.getBoundingClientRect();
+        }
+        else if (window.currentShape = "circle") {
+            const rect = canvas.getBoundingClientRect();
                 const currX = e.clientX - rect.left;
                 const currY = e.clientY - rect.top;
-                clearCanvas(existingShapes,canvas,ctx)
-                ctx.strokeRect(startX,startY,currX-startX,currY-startY);
-            }
+                const centerX = (startX + currX) / 2;
+                const centerY = (startY + currY) / 2;
+                const radiusX = Math.abs(currX - startX) / 2;
+                const radiusY = Math.abs(currY - startY) / 2;
+                existingShapes.push({
+                type: "circle",
+                radiusX,
+                radiusY,
+                centerX,
+                centerY
+            })
+            const message:shape = {type:"circle",centerX, centerY, radiusX, radiusY}
+            socket.send(JSON.stringify({
+                type:"chat",
+                roomId,
+                message:JSON.stringify(message),
+                userId:"0bf0d2d9-9f21-44f1-8c56-3e5d9736ede8"
+            }))
+        }
         })
+      
 }
 
 async function fetchExistingShapes(roomId:string) {
@@ -92,5 +138,11 @@ function clearCanvas(existingShapes:shape[],canvas :HTMLCanvasElement,ctx:Canvas
         if (shape.type=="rect")  {
             ctx.strokeRect(shape.startX,shape.startY,shape.width,shape.height)
         }
+        else if (shape.type="circle") {
+            ctx.beginPath();
+            ctx.ellipse(shape.centerX, shape.centerY, shape.radiusX, shape.radiusY, 0, 0, 2 * Math.PI);
+            ctx.stroke();
+        }
+        
      })
 }
