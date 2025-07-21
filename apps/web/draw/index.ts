@@ -20,15 +20,12 @@ export async function initDraw(canvas:HTMLCanvasElement, roomId:string,socket:We
         if (!ctx) {
             return;
         }
-
+        
         clearCanvas(existingShapes,canvas,ctx)
-        const width = canvas.width;
-        const height = canvas.height;
         let isMouseDown = false;
         let startX:number, startY:number;
         socket.onmessage = (e)=>{
             console.log("in")
-            
             const data = JSON.parse(e.data)
             if (data.type=="chat") {
                 console.log("in in")
@@ -43,8 +40,7 @@ export async function initDraw(canvas:HTMLCanvasElement, roomId:string,socket:We
             startY = e.clientY - rect.top;
         })
         canvas.addEventListener("mousemove",(e)=>{
-            // @ts-ignore
-            console.log(window.currentShape)
+           
             if (isMouseDown) {
                 // @ts-ignore
                 if (window.currentShape=="rect") {

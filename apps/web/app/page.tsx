@@ -56,16 +56,18 @@ function App() {
               system design, and visual thinking. No login required.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12">
-              <button className="group bg-gradient-to-r from-blue-500 to-purple-600 text-white px-8 py-4 rounded-xl text-lg font-semibold hover:from-blue-600 hover:to-purple-700 transition-all duration-200 transform hover:scale-105 flex items-center space-x-2">
                 <Link href={"./auth?type=signup"}>
+              <button className="group bg-gradient-to-r from-blue-500 to-purple-600 text-white px-8 py-4 rounded-xl text-lg font-semibold hover:from-blue-600 hover:to-purple-700 transition-all duration-200 transform hover:scale-105 flex items-center space-x-2">
                 <span>Sign Up</span>
-                </Link>
                 <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
               </button>
+                </Link>
+                    <Link href={"./canvas/2"}>
               <button className="group flex items-center space-x-2 text-gray-700 hover:text-gray-900 transition-colors px-8 py-4">
                 <Play className="h-5 w-5" />
                 <span className="font-medium">Guest Login</span>
               </button>
+              </Link>
             </div>
             
             {/* Hero Image Placeholder */}
@@ -73,8 +75,7 @@ function App() {
               <div className="bg-white rounded-2xl shadow-2xl border border-gray-200 p-8 transform rotate-1 hover:rotate-0 transition-transform duration-500">
                 <div className="aspect-video bg-gradient-to-br from-gray-50 to-gray-100 rounded-lg border-2 border-dashed border-gray-300 flex items-center justify-center">
                   <div className="text-center">
-                    <PenTool className="h-16 w-16 text-gray-400 mx-auto mb-4" />
-                    <p className="text-gray-500 text-lg">Interactive Demo Canvas</p>
+                    <video src="vid.mp4" autoPlay loop muted ></video>
                   </div>
                 </div>
               </div>
